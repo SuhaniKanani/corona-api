@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>CORONA API</title>
+    <style>
+        form {
+            display: flex;
+        }
+
+        #city {
+            height: 30px;
+            width: 300px;
+            border-radius: 40px;
+            border: 3px solid #ED6869;
+        }
+
+        #submit {
+            height: 40px;
+            width: 100px;
+            border-radius: 40px;
+            margin-top: 1.5%;
+            margin-left: 1%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            background-color: #ED6869;
+            box-shadow: 2px 2px 8px #ffb6b6;
+            color: white;
+            border: none;
+        }
+
+        #main {
+            height: 500px;
+            width: 300px;
+            background-color: #FDECEC;
+            border: 3px solid #ED6869;
+            border-radius: 20px;
+            margin-left: 20px;
+            background-image: url('corona bg.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            display: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .menu {
+            height: 50px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            font-size: 1.3rem;
+            justify-content: space-between;
+        }
+
+        .menu>p {
+            padding-left: 10px;
+        }
+
+        .menu2 {
+            height: 30px;
+            width: 100px;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        #content {
+            height: 450px;
+            width: 100%;
+        }
+
+        #cityinfo {
+            height: 40px;
+            width: 85%;
+            border: 3px solid #ED6869;
+            border-radius: 30px;
+            margin-left: 13px;
+            margin-top: -5%;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+        }
+
+        #content>h3 {
+            padding-left: 20px;
+        }
+
+        #dischargedinfo {
+            height: 40px;
+            width: 85%;
+            border: 3px solid #ED6869;
+            border-radius: 30px;
+            margin-left: 13px;
+            margin-top: -5%;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+        }
+
+        #deathsinfo {
+            height: 40px;
+            width: 85%;
+            border: 3px solid #ED6869;
+            border-radius: 30px;
+            margin-left: 13px;
+            margin-top: -5%;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+        }
+
+        #indianinfo {
+            height: 40px;
+            width: 85%;
+            border: 3px solid #ED6869;
+            border-radius: 30px;
+            margin-left: 13px;
+            margin-top: -5%;
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <form>
+        <h2>Enter City Name: <input type="text" id="city"></h2>
+        <input type="button" id="submit" value="Submit">
+    </form>
+
+    <div id="main">
+        <div class="menu">
+            <p>12:45</p>
+            <div class="menu2">
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-tower-broadcast"></i>
+                <i class="fa-solid fa-battery-full"></i>
+            </div>
+        </div>
+
+        <div id="content">
+            <h3>City Name:</h3>
+            <div id="cityinfo"></div>
+
+            <h3>Indian Case & Foreign Case:</h3>
+            <div id="indianinfo"></div>
+
+            <h3>Discharged:</h3>
+            <div id="dischargedinfo"></div>
+
+            <h3>Deaths:</h3>
+            <div id="deathsinfo"></div>
+        </div>
+    </div>
+
+    <script>
+        const city = document.getElementById('city');
+        const submit = document.getElementById('submit');
+        const cityinfo = document.getElementById('cityinfo');
+        const indianinfo = document.getElementById('indianinfo');
+        const dischargedinfo = document.getElementById('dischargedinfo');
+        const deathsinfo = document.getElementById('deathsinfo');
+
+        submit.addEventListener('click', () => {
+            const cityName = city.value.trim();
+
+            fetch("https://api.rootnet.in/covid19-in/stats/latest")
+                .then(response => response.json())
+                .then(data => {
+                    const regions = data.data.regional;
+                    const regionData = regions.find(region => region.loc.toLowerCase() === cityName.toLowerCase());
+
+                    if (regionData) {
+                        cityinfo.textContent = `${regionData.loc}`;
+                        indianinfo.textContent = `${regionData.confirmedCasesIndian} & ${regionData.confirmedCasesForeign}`;
+                        dischargedinfo.textContent = `${regionData.discharged}`;
+                        deathsinfo.textContent = `${regionData.deaths}`;
+                    } else {
+                        alert("City not found in the data.");
+                    }
+
+                     main.style.display = 'block'
+                })
+                .catch(error => {
+                    console.error(error);
+
+                });
+        });
+    </script>
+</body>
+
+</html>
